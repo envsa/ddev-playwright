@@ -1,0 +1,22 @@
+{
+  "name": "ddev-playwright",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "release": "pnpm bumpp --commit 'release: v%s' --tag 'v%s'"
+  },
+  "author": {
+    "name": "Liam Rella",
+    "email": "DEW.ICTWebsSrvices@sa.gov.au",
+    "url": "https://github.com/envsa"
+  },
+  "license": "MIT",
+  "packageManager": "pnpm@9.12.2",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "bumpp": "^9.5.2"
+  }
+}
