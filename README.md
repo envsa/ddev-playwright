@@ -1,4 +1,4 @@
-[![tests](https://github.com/deviantintegral/ddev-playwright/actions/workflows/tests.yml/badge.svg)](https://github.com/deviantintegral/ddev-playwright/actions/workflows/tests.yml) ![project is maintained](https://img.shields.io/maintenance/yes/2024.svg)
+[![tests](https://github.com/envsa/ddev-playwright/actions/workflows/tests.yml/badge.svg)](https://github.com/envsa/ddev-playwright/actions/workflows/tests.yml) ![project is maintained](https://img.shields.io/maintenance/yes/2025.svg)
 
 # ddev-playwright <!-- omit in toc -->
 
@@ -14,7 +14,7 @@ This repository contains an addon for integrating Playwright tests into your dde
 
 Highlights include:
 
-* Support for both npm and yarn.
+* Support for pnpm.
 * Support for running headless tests.
 * Support for running headed tests with remote access to the UI through your web browser.
 * Only installs the heavy Playwright dependencies if a given local opts in to them.
@@ -24,32 +24,27 @@ Highlights include:
 ## Getting started
 
 ```console
-ddev add-on get Lullabot/ddev-playwright
+ddev add-on get envsa/ddev-playwright
 git add .
-git add -f .ddev/config.playwright.yml
-mkdir -p test/playwright
-# To install with npm.
-ddev exec -d /var/www/html/test/playwright npm init playwright@latest
-# Or yarn.
-ddev exec -d /var/www/html/test/playwright yarn create playwright
+git add -f .ddev/config.playwright.yaml
+ddev exec pnpm init playwright
 
-# Add ignoreHTTPSErrors: true in test/playwright/playwright.config.ts to support HTTPS in tests.
 # Now, install playwright dependencies and cache them for later.
 ddev install-playwright
 # To run playwright's test command.
-ddev playwright test
+ddev pnpm exec playwright test
 # To run with the UI.
-ddev playwright test --headed
+ddev playwright-ui (requires an npm script)
 # To generate playwright code by browsing.
-ddev playwright codegen
+ddev pnpm exec playwright codegen
 ```
 
 The following services are exposed with this addon:
 
 | Service                 | URL                               | Notes                                                                                      |
 |-------------------------|-----------------------------------|--------------------------------------------------------------------------------------------|
-| KasmVNC                 | https://\<PROJECT>.ddev.site:8444 | Username is your local username. Password is `secret`.                                     |
-| Playwright Test Reports | https://\<PROJECT>.ddev.site:9324 | This port is changed from the default to not conflict with running Playwright on the host. |
+| KasmVNC                 | https://\<PROJECT>.<PROJECT_TLD>:8444 | Username is your local username. Password is `secret`.                                     |
+| Playwright Test Reports | https://\<PROJECT>.<PROJECT_TLD>:9324 | This port is changed from the default to not conflict with running Playwright on the host. |
 
 ## Similar Tools
 
