@@ -1,0 +1,4 @@
+#!/bin/bash
+#ddev-generated
+
+ddev launch ":8444" && ddev pnpm test:ui

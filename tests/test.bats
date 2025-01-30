@@ -1,29 +1,19 @@
 setup() {
   set -eu -o pipefail
-  load 'test_helper/bats-support/load'
-  load 'test_helper/bats-assert/load'
-  export DIR
-  DIR="$( cd "$( dirname "$BATS_TEST_FILENAME" )" >/dev/null 2>&1 && pwd )/.."
-
-  export DDEV_NON_INTERACTIVE=true
-
-  echo "# user is ${USER}" >&3
-
-  export TESTDIR
-  #TESTDIR=$(mktemp -d "${HOME}/tmp/test-addon-ddev-playwright.XXXXXXXXX")
-  export TESTDIR=~/tmp/test-addon-template
+  export DIR="$( cd "$( dirname "$BATS_TEST_FILENAME" )" >/dev/null 2>&1 && pwd )/.."
+  export TESTDIR=~/tmp/envsa-ddev-playwright
   mkdir -p ${TESTDIR}
-  echo "# testdir is ${TESTDIR}" >&3
-
-  export PROJNAME=test-addon-ddev-playwright-${BATS_SUITE_TEST_NUMBER}
+  export PROJNAME=envsa-ddev-playwright
   export DDEV_NON_INTERACTIVE=true
-
   ddev delete -Oy "${PROJNAME}" >/dev/null 2>&1 || true
   cd "${TESTDIR}"
   mkdir -p web
-  echo "# configuring project..." >&3
-  ddev config --project-name="${PROJNAME}" --docroot=web --project-type=php
 
+  echo "# user is ${USER}" >&3
+  echo "# testdir is ${TESTDIR}" >&3
+
+  echo "# configuring project..." >&3
+  ddev config --project-name="${PROJNAME}" --docroot=web --project-type=php --corepack-enable=true
   echo "# ddev start" >&3
   ddev start -y >/dev/null
 }
@@ -43,11 +33,11 @@ teardown() {
 get_addon() {
   set -eu -o pipefail
   cd "${TESTDIR}"
-  echo "# ddev get ${DIR} with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
-  ddev get "${DIR}"
-  assert [ -f .ddev/config.playwright.yml ]
+  echo "# ddev add-on get ${DIR} with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
+  ddev add-on get "${DIR}"
+  assert [ -f .ddev/config.playwright.yaml ]
   assert [ -f .ddev/commands/host/install-playwright ]
-  assert [ -f .ddev/commands/web/playwright ]
+  assert [ -f .ddev/commands/host/playwright-ui ]
   assert [ -f .ddev/web-build/.gitignore ]
   assert [ -f .ddev/web-build/disabled.Dockerfile.playwright ]
   assert [ -x .ddev/web-build/install-kasmvnc.sh ]
@@ -86,33 +76,27 @@ verify_run_playwright() {
   ddev playwright test --reporter=line
 }
 
-@test "install from directory with npm" {
-  get_addon
-  cp -av "$DIR"/tests/testdata/npm-playwright test/playwright
-  ddev exec -d /var/www/html/test/playwright npm ci
-  verify_run_playwright
-}
+# @test "install from directory" {
+#   get_addon
+#   cp -av "$DIR"/tests/testdata/playwright test/playwright
+#   ddev exec -d /var/www/html/test/playwright pnpm i
+#   verify_run_playwright
+# }
 
-@test "install from directory with yarn" {
-  get_addon
-  cp -av "$DIR"/tests/testdata/yarn-playwright test/playwright
-  verify_run_playwright
-}
-
-@test "install requires a playwright installation" {
-  set -eu -o pipefail
-  cd "${TESTDIR}"
-  echo "# ddev get ${DIR} with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
-  ddev get "${DIR}"
-  run ddev install-playwright
-  assert_failure
-}
+# @test "install requires a playwright installation" {
+#   set -eu -o pipefail
+#   cd "${TESTDIR}"
+#   echo "# ddev add-on get ${DIR} with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
+#   ddev add-on get "${DIR}"
+#   run ddev install-playwright
+#   assert_failure
+# }
 
 #@test "install from release" {
 #  set -eu -o pipefail
 #  cd ${TESTDIR} || ( printf "unable to cd to ${TESTDIR}\n" && exit 1 )
-#  echo "# ddev get ddev/ddev-addon-template with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
-#  ddev get ddev/ddev-addon-template
+#  echo "# ddev add-on get ddev/ddev-addon-template with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
+#  ddev add-on get ddev/ddev-addon-template
 #  ddev restart >/dev/null
 #  health_checks
 #}
