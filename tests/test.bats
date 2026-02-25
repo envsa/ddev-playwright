@@ -22,7 +22,7 @@ setup() {
   cd "${TESTDIR}"
   mkdir -p web
   echo "# configuring project..." >&3
-  ddev config --project-name="${PROJNAME}" --docroot=web --project-type=php
+  ddev config --project-name="${PROJNAME}" --docroot=web --project-type=php --corepack-enable=true
 
   echo "# ddev start" >&3
   ddev start -y >/dev/null
@@ -47,6 +47,7 @@ get_addon() {
   ddev get "${DIR}"
   assert [ -f .ddev/config.playwright.yml ]
   assert [ -f .ddev/commands/host/install-playwright ]
+  assert [ -f .ddev/commands/host/playwright-ui ]
   assert [ -f .ddev/commands/web/playwright ]
   assert [ -f .ddev/web-build/.gitignore ]
   assert [ -f .ddev/web-build/disabled.Dockerfile.playwright ]
@@ -86,16 +87,10 @@ verify_run_playwright() {
   ddev playwright test --reporter=line
 }
 
-@test "install from directory with npm" {
+@test "install from directory" {
   get_addon
-  cp -av "$DIR"/tests/testdata/npm-playwright test/playwright
-  ddev exec -d /var/www/html/test/playwright npm ci
-  verify_run_playwright
-}
-
-@test "install from directory with yarn" {
-  get_addon
-  cp -av "$DIR"/tests/testdata/yarn-playwright test/playwright
+  cp -av "$DIR"/tests/testdata/playwright test/playwright
+  ddev exec -d /var/www/html/test/playwright pnpm i
   verify_run_playwright
 }
 

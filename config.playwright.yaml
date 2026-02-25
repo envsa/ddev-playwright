@@ -9,7 +9,10 @@ hooks:
         if [[ -f .ddev/web-build/Dockerfile.playwright ]]
         then
           rm -rf .ddev/web-build/playwright
-          cp -r test/playwright .ddev/web-build/
+          mkdir -p .ddev/web-build/playwright
+          config=$(ls playwright.config.{js,ts} 2>/dev/null | head -n1 || true)
+          [[ -n "$config" ]] && cp "$config" .ddev/web-build/playwright/
+          cp -r {package.json,pnpm-lock.yaml} .ddev/web-build/playwright
         fi
   post-start:
     # Clean up the playwright directory copied for builds.

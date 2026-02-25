@@ -3,8 +3,4 @@
 
 cd test/playwright || exit 1
 
-if [ -f yarn.lock ]; then
-  yarn && yarn playwright "$@"
-else
-  npm ci && npx playwright "$@"
-fi
+pnpm install && pnpm exec playwright "$@"
