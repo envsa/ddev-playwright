@@ -1,6 +1,0 @@
-#!/bin/sh
-#ddev-generated
-
-cd test/playwright || exit 1
-
-pnpm install && pnpm exec playwright "$@"

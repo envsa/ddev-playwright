@@ -48,7 +48,6 @@ get_addon() {
   assert [ -f .ddev/config.playwright.yml ]
   assert [ -f .ddev/commands/host/install-playwright ]
   assert [ -f .ddev/commands/host/playwright-ui ]
-  assert [ -f .ddev/commands/web/playwright ]
   assert [ -f .ddev/web-build/.gitignore ]
   assert [ -f .ddev/web-build/disabled.Dockerfile.playwright ]
   assert [ -x .ddev/web-build/install-kasmvnc.sh ]
